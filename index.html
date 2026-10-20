@@ -3,7 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    body {
+      font-family: "Chakra Petch", ui-sans-serif, system-ui, sans-serif;
+    }
+
+    #encrypted-text {
+      font-family: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+  </style>
   <title>Algoritmos - Encriptación</title>
 </head>
 
@@ -36,27 +50,51 @@
           </select>
         </div>
 
+        <fieldset class="mt-4">
+          <legend class="text-sm font-medium text-slate-700">Operación</legend>
+          <div class="mt-1 grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-1">
+            <label for="operation-encrypt" class="cursor-pointer">
+              <input id="operation-encrypt" type="radio" name="operation" value="encrypt" class="peer sr-only" checked>
+              <span class="flex items-center justify-center rounded-md px-3 py-2 text-sm font-semibold text-slate-600 transition peer-checked:bg-white peer-checked:text-indigo-700 peer-checked:shadow-sm peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-300">
+                Cifrar
+              </span>
+            </label>
+            <label for="operation-decrypt" class="cursor-pointer">
+              <input id="operation-decrypt" type="radio" name="operation" value="decrypt" class="peer sr-only">
+              <span class="flex items-center justify-center rounded-md px-3 py-2 text-sm font-semibold text-slate-600 transition peer-checked:bg-white peer-checked:text-indigo-700 peer-checked:shadow-sm peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-300">
+                Descifrar
+              </span>
+            </label>
+          </div>
+        </fieldset>
+
         <!-- Texto -->
         <div class="mt-4">
           <label for="encryption-text" class="flex items-center justify-between text-sm font-medium text-slate-700">
-            <span>Texto a encriptar</span>
+            <span>
+              <span id="text-label">Texto a cifrar</span>
+              <span id="text-count" class="font-normal text-slate-400">(0)</span>
+            </span>
           </label>
           <textarea
             id="encryption-text"
             rows="6"
-            placeholder="Ingrese el texto a encriptar"
+            placeholder="Ingrese el texto a cifrar"
             class="mt-1 w-full resize-y rounded-lg border border-slate-300 p-3 text-sm shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none"></textarea>
         </div>
 
         <!-- Clave -->
         <div class="mt-4">
           <label for="encryption-key" class="flex items-center justify-between text-sm font-medium text-slate-700">
-            <span>Clave de encriptación</span>
+            <span>
+              <span id="key-label">Clave de cifrado</span>
+              <span id="key-count" class="font-normal text-slate-400">(0)</span>
+            </span>
           </label>
           <textarea
             id="encryption-key"
             rows="4"
-            placeholder="Ingrese la clave de encriptación"
+            placeholder="Ingrese la clave de cifrado"
             class="mt-1 w-full resize-y rounded-lg border border-slate-300 p-3 text-sm shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none"></textarea>
           <p id="key-status" class="mt-2 hidden text-xs"></p>
         </div>
@@ -65,15 +103,9 @@
         <div class="mt-6 flex flex-wrap gap-3">
           <button
             type="button"
-            id="encrypt-btn"
+            id="action-btn"
             class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-300 focus:outline-none">
-            🔒 Encriptar
-          </button>
-          <button
-            type="button"
-            id="decrypt-btn"
-            class="inline-flex items-center gap-2 rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 focus:ring-2 focus:ring-slate-300 focus:outline-none">
-            🔓 Desencriptar
+            Cifrar
           </button>
           <button
             type="button"
@@ -82,6 +114,7 @@
             Limpiar
           </button>
         </div>
+        <p id="alert" class="mt-3 hidden text-sm text-red-600" role="alert"></p>
       </section>
 
       <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -90,16 +123,14 @@
         </div>
 
         <label for="encrypted-text" class="mt-4 block text-sm font-medium text-slate-700">
-          Texto desencriptado
+          <span id="result-label">Texto cifrado (hexadecimal)</span>
         </label>
         <textarea
           id="encrypted-text"
           rows="13"
-          placeholder="El resultado aparecerá aquí…"
-          class="mt-1 w-full resize-none rounded-lg border border-slate-300 bg-slate-50 p-3 font-mono text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"></textarea>
-
-        <!-- Alertas -->
-        <div id="alert" class="mt-3 hidden rounded-lg p-3 text-sm" role="alert"></div>
+          placeholder="El texto cifrado aparecerá aquí…"
+          class="mt-1 w-full resize-none rounded-lg border border-slate-300 bg-slate-50 p-3 font-mono text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
+          readonly></textarea>
       </section>
     </form>
 
