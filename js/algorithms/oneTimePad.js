@@ -37,6 +37,10 @@ export class OneTimePad extends Cipher {
 }
 
 export function generateKey(length) {
+    if (!Number.isInteger(length) || length < 0) {
+        throw new Error('El tamaño de la clave debe ser un entero no negativo.');
+    }
+
     const key = new Uint8Array(length);
     window.crypto.getRandomValues(key);
     return key;

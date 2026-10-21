@@ -1,5 +1,5 @@
 // js/app.js
-import { OneTimePad } from "./algorithms/oneTimePad.js";
+import { generateKey, OneTimePad } from "./algorithms/oneTimePad.js";
 import { InterruptedTransposition } from "./algorithms/transposition.js";
 
 const messageInput = document.getElementById('encryption-text');
@@ -11,6 +11,7 @@ const textLabel = document.getElementById('text-label');
 const keyLabel = document.getElementById('key-label');
 const resultLabel = document.getElementById('result-label');
 const actionBtn = document.getElementById('action-btn');
+const generateKeyBtn = document.getElementById('generate-key-btn');
 const alertBox = document.getElementById('alert');
 const textCount = document.getElementById('text-count');
 const keyCount = document.getElementById('key-count');
@@ -62,7 +63,7 @@ function selectCipher() {
 function updateInterface() {
     const operation = getOperation();
     const config = interfaces[operation];
-    const isOneTimePad = algorithmInput.value === 'oneTimePad';
+    const isOneTimePad = algorithmInput.value.trim() === 'oneTimePad';
 
     textLabel.textContent = config.textLabel;
     messageInput.placeholder = config.textPlaceholder;
@@ -81,6 +82,10 @@ function updateInterface() {
         : config.resultLabel;
     encryptedOutput.placeholder = config.resultPlaceholder;
     actionBtn.textContent = operation === 'encrypt' ? 'Cifrar' : 'Descifrar';
+    actionBtn.hidden = isOneTimePad;
+    actionBtn.classList.toggle('hidden', isOneTimePad);
+    generateKeyBtn.hidden = !isOneTimePad;
+    generateKeyBtn.classList.toggle('hidden', !isOneTimePad);
 }
 
 function clearError() {
@@ -91,6 +96,38 @@ function clearError() {
 function showError(message) {
     alertBox.textContent = message;
     alertBox.classList.remove('hidden');
+}
+
+function getOneTimePadKeyLength() {
+    if (getOperation() === 'encrypt') {
+        return new TextEncoder().encode(messageInput.value).length;
+    }
+
+    const cipherText = messageInput.value.trim();
+    if (cipherText.length === 0 || cipherText.length % 2 !== 0 || !/^[0-9a-f]+$/i.test(cipherText)) {
+        throw new Error('Ingrese un texto cifrado hexadecimal válido para generar la clave.');
+    }
+
+    return cipherText.length / 2;
+}
+
+function createRandomKey() {
+    clearError();
+
+    try {
+        const length = getOneTimePadKeyLength();
+        if (length === 0) {
+            throw new Error('Ingrese el texto original antes de generar la clave.');
+        }
+
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const randomBytes = generateKey(length);
+        keyInput.value = Array.from(randomBytes, byte => alphabet[byte % alphabet.length]).join('');
+        updateCounts();
+        runCipher();
+    } catch (error) {
+        showError(`No se pudo generar la clave: ${error.message}`);
+    }
 }
 
 algorithmInput.addEventListener('change', () => {
@@ -160,6 +197,7 @@ function scheduleCipher() {
 }
 
 actionBtn.addEventListener('click', runCipher);
+generateKeyBtn.addEventListener('click', createRandomKey);
 messageInput.addEventListener('input', scheduleCipher);
 keyInput.addEventListener('input', scheduleCipher);
 

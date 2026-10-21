@@ -91,11 +91,13 @@
               <span id="key-count" class="font-normal text-slate-400">(0)</span>
             </span>
           </label>
-          <textarea
-            id="encryption-key"
-            rows="4"
-            placeholder="Ingrese la clave de cifrado"
-            class="mt-1 w-full resize-y rounded-lg border border-slate-300 p-3 text-sm shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none"></textarea>
+          <div class="mt-1 flex items-start gap-2">
+            <textarea
+              id="encryption-key"
+              rows="4"
+              placeholder="Ingrese la clave de cifrado"
+              class="w-full resize-y rounded-lg border border-slate-300 p-3 text-sm shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none"></textarea>
+          </div>
           <p id="key-status" class="mt-2 hidden text-xs"></p>
         </div>
 
@@ -106,6 +108,13 @@
             id="action-btn"
             class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-300 focus:outline-none">
             Cifrar
+          </button>
+          <button
+            type="button"
+            id="generate-key-btn"
+            class="hidden inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-300 focus:outline-none"
+            title="Generar una clave aleatoria del tamaño necesario">
+            Generar clave
           </button>
           <button
             type="button"
