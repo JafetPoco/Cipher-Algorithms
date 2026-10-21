@@ -12,6 +12,8 @@ const keyLabel = document.getElementById('key-label');
 const resultLabel = document.getElementById('result-label');
 const actionBtn = document.getElementById('action-btn');
 const generateKeyBtn = document.getElementById('generate-key-btn');
+const copyOutputBtn = document.getElementById('copy-output-btn');
+const copyStatus = document.getElementById('copy-status');
 const alertBox = document.getElementById('alert');
 const textCount = document.getElementById('text-count');
 const keyCount = document.getElementById('key-count');
@@ -98,6 +100,37 @@ function showError(message) {
     alertBox.classList.remove('hidden');
 }
 
+function showCopyStatus(message, isError = false) {
+    copyStatus.textContent = message;
+    copyStatus.className = `mt-2 text-xs ${isError ? 'text-red-600' : 'text-emerald-600'}`;
+}
+
+async function copyOutput() {
+    if (!encryptedOutput.value) {
+        showCopyStatus('No hay contenido para copiar.', true);
+        return;
+    }
+
+    try {
+        if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(encryptedOutput.value);
+        } else {
+            encryptedOutput.select();
+            const copied = document.execCommand('copy');
+            encryptedOutput.setSelectionRange(0, 0);
+
+            if (!copied) {
+                throw new Error('El navegador rechazó la copia.');
+            }
+        }
+
+        showCopyStatus('Resultado copiado.');
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'No se pudo copiar el resultado.';
+        showCopyStatus(message, true);
+    }
+}
+
 function getOneTimePadKeyLength() {
     if (getOperation() === 'encrypt') {
         return new TextEncoder().encode(messageInput.value).length;
@@ -151,6 +184,7 @@ document.getElementById('clear-btn').addEventListener('click', () => {
     keyInput.value = '';
     encryptedOutput.value = '';
     clearError();
+    copyStatus.className = 'mt-2 hidden text-xs';
     updateCounts();
 });
 
@@ -198,6 +232,7 @@ function scheduleCipher() {
 
 actionBtn.addEventListener('click', runCipher);
 generateKeyBtn.addEventListener('click', createRandomKey);
+copyOutputBtn.addEventListener('click', copyOutput);
 messageInput.addEventListener('input', scheduleCipher);
 keyInput.addEventListener('input', scheduleCipher);
 
